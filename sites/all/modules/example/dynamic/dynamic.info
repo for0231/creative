@@ -1,0 +1,5 @@
+name = Form Example -- Creating a Dynamic Form
+description = An example of a dynamic form.
+package = Drupal Development
+core = 7.x
+files[] = dynamic.module
