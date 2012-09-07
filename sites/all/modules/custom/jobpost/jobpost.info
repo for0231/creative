@@ -1,0 +1,10 @@
+name = Job Post 
+description = Job post
+core = 7.x
+package = 自定义模块
+; Information added by drupal.org packaging script on 2011-11-11
+version = "7.x-1.0"
+core = "7.x"
+project = "Job"
+datestamp = "1321022730"
+
