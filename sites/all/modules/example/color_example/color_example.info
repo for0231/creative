@@ -1,7 +1,0 @@
-name = Color Example
-description = "Create a custom field for inputting and displaying text in a colorful fashion"
-package = Pro Drupal Development
-core = 7.x
-version = 7.x
-files[] = color_example.module
-
