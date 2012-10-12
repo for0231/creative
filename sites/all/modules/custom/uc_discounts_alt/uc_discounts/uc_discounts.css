@@ -1,0 +1,47 @@
+.uc-discounts-cart-pane-container {
+  border-left: 1px solid #BBBBBB;
+  border-right: 1px solid #BBBBBB;
+  border-bottom: 1px solid #BBBBBB;
+  text-align: right;
+  width: 100%;
+}
+
+.uc-discounts-cart-pane-table {
+  text-align: right;
+  width: 100%;
+}
+
+.uc-discounts-cart-pane-table-cell {
+  width: 100%;
+}
+
+table.uc-discounts td.date,
+table.uc-discounts td.operations {
+  white-space: nowrap;
+}
+
+table.uc-discounts td.operations a {
+  padding-right: 5px;
+}
+
+table.uc-discounts td.numeric {
+  text-align: center;
+}
+
+table.uc-discounts td.is_inactive,
+table.uc-discounts td.is_active {
+  text-align: center;
+  font-weight: bold;
+  color: green;
+}
+
+table.uc-discounts td.is_inactive {
+  color: red;
+}
+
+code.uc-discounts-generated-codes {
+  display: block;
+  background: #eee;
+  border: 1px solid #333;
+  white-space: pre;
+}

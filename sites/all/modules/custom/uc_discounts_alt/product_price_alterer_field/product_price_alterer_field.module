@@ -1,0 +1,169 @@
+<?php
+//$Id: product_price_alterer_field.module,v 1.16 2009/08/22 21:30:39 ryangroe Exp $
+
+
+/**
+ * See http://drupal.org/node/106716 for more information.
+ */
+
+/**
+ * Implementation of hook_field_info().
+ */
+function product_price_alterer_field_field_info() {
+  return array(
+    "discounted_price" => array(
+      "label" => t("Discounted Price"),
+      "description" => t("Alters price for products where uc_discounts_alt discounts apply when added with a quantity of one or less"),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_content_is_empty().
+ */
+function product_price_alterer_field_content_is_empty($item, $field) {
+  return FALSE;
+}
+
+/**
+ * Implementation of hook_widget_info().
+ */
+function product_price_alterer_field_widget_info() {
+  return array(
+    "discounted_price" => array(
+      "label" => "Default Display",
+      "field types" => array("discounted_price"),
+      "multiple values" => CONTENT_HANDLE_CORE,
+      "callbacks" => array(
+        "default value" => CONTENT_CALLBACK_DEFAULT,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_widget().
+ */
+function product_price_alterer_field_widget(&$form, &$form_state, $field, $items, $delta = 0) {
+  $element = array(
+    "#type" => $field["widget"]["type"],
+    "#default_value" => isset($items[$delta]) ? $items[$delta] : NULL,
+  );
+  return $element;
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function product_price_alterer_field_field_formatter_info() {
+  return array(
+    "default" => array(
+      "label" => "Discounted Price",
+      "field types" => array("discounted_price"),
+    ),
+  );
+}
+
+/**
+ * Theme function for 'default' text field formatter.
+ */
+function theme_product_price_alterer_field_formatter_default($element) {
+  return $element["#item"]["discounted_price"];
+}
+
+/**
+ * Implementation of hook_field()
+ */
+function product_price_alterer_field_field($op, &$node, $field, &$items, $teaser, $page) {
+  switch ($op) {
+    case "sanitize":
+    case "view":
+      //If items is empty, generate value by getting discounts that apply to this product
+      if (empty($items)) {
+        $discounted_price = uc_discounts_get_discounted_price_for_product($node);
+        if (!is_null($discounted_price)) {
+          //Add field for discounted price
+          $item = array();
+          $item["discounted_price"] = theme("product_discounted_price", $node, uc_currency_format($discounted_price));
+          $items[] = $item;
+          add_product_price_altering_css($node);
+          add_product_price_altering_javascript($node);
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Implementation of hook_theme().
+ */
+function product_price_alterer_field_theme() {
+  return array(
+    "product_price_alterer_field_formatter_default" => array(
+      "arguments" => array("element" => NULL),
+    ),
+    "product_discounted_price" => array(
+      "arguments" => array("product", "discounted_price"),
+    ),
+  );
+}
+
+/**
+ * Theme function for producing product discounted price html.
+ * Returns discounted price for product (based on passed discounts).
+ */
+function theme_product_discounted_price($product, $discounted_price_string) {
+  return $discounted_price_string;
+}
+
+/**
+ * Function for writing css to product page.
+ */
+function add_product_price_altering_css() {
+  static $product_price_alterer_field_css_added;
+  if (empty($product_price_alterer_field_css_added)) {
+    $product_price_alterer_field_css_added = TRUE;
+    drupal_add_css(drupal_get_path('module', 'product_price_alterer_field') .'/product_price_alterer_field.css');
+  }
+}
+
+/**
+ * Function for writing javascript to product page.
+ */
+function add_product_price_altering_javascript() {
+  static $product_price_alterer_field_javascript_added;
+  if (empty($product_price_alterer_field_javascript_added)) {
+    $product_price_alterer_field_javascript_added = TRUE;
+    //Alter price using javascript
+    drupal_add_js("
+    $(document).ready(function() {
+      $('.views-field-discounted-price').each(function() {
+        var self = $(this);
+        var content = self.find('.field-content:first');
+        if ((content.size() > 0) && ($.trim(content.html()).length == 0)) {
+          return true;
+        }
+        else if ($.trim(self.html()).length == 0) {
+          return true;
+        }
+
+        self.parent().find('.views-field-sell-price:not(th)').addClass('original-sell-price');
+      });
+      $('.uc-price-sell:not(.original-sell-price), .sell-price:not(.original-sell-price)').each(function() {
+        var self = $(this);
+        if (self.parents('.node').find('.field-type-discounted-price').length > 0) {
+          self.addClass('original-sell-price');
+        }
+      });
+    });", 'inline');
+  }
+}
+
+/**
+ * Implementation hook_views_api
+ */
+function product_price_alterer_field_views_api() {
+  return array(
+    'api' => 2,
+  );
+}
