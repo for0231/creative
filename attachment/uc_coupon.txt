@@ -1,0 +1,44 @@
+uc-coupon 模块系统
+------------------------------------------------
+uc-coupon-api APIs设计
+uc-coupon-db 数据库设计
+uc-coupon-permission  权限设计
+uc-coupon-menu 请求设计
+
+系统变量  用variable_get() 获取
+-------------------------------------------------------
+date_format_uc_store 时间格式  默认 'm/d/Y'
+uc_coupon_used_order_status    用户订单优惠券状态 
+uc_coupon_expiry_timezone      默认时区设置
+
+uc-coupon-api APIs设计
+--------------------------------------------------------
+  uc_coupon_load(Object coupon $cid)
+  uc_coupon_save(&$coupon, $edit=array())
+  uc_coupon_delete($cid)
+  uc_coupon_count_usage($cid, $uid=NULL)  
+  _uc_coupon_format_discount($coupon, $currency)
+  uc_coupon_get_bulk_code($coupon, $id)
+
+uc-coupon-db 数据库设计
+---- 表 ---------------- -------------使用函数情况-----------
+  uc_coupons             uc_coupon_load,uc_coupon_save,uc_coupon_delete
+  uc_coupons_orders      uc_coupon_delete
+
+uc-coupon-menu 请求设计
+------请求------------- -----------------------调用函数-----------
+'admin/store/coupons'                         uc_coupon_display
+'admin/store/coupons/list'                    uc_coupon_display
+'admin/store/coupons/inactive'                uc_coupon_display
+'admin/store/coupons/add'                     uc_coupon_add_form
+'admin/store/coupons/%uc_coupon'              uc_coupon_view
+'admin/store/coupons/%uc_coupon/view'         uc_coupon_view
+'admin/store/coupons/%uc_coupon/print'        uc_coupon_print
+'admin/store/coupons/%uc_coupon/delete'       uc_coupon_delete_confirm 
+'admin/store/coupons/%uc_coupon/codes'        uc_coupon_codes_csv  (Download
+codes) 
+'admin/store/coupons/autocomplete/node'       uc_coupon_autocomplete_node
+'admin/store/coupons/autocomplete/term'       uc_coupon_autocomplete_term
+'admin/store/coupons/autocomplete/user'       uc_coupon_autocomplete_user
+'admin/store/coupons/autocomplete/role'       uc_coupon_autocomplete_role
+
