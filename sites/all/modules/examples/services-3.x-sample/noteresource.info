@@ -1,0 +1,9 @@
+; $Id$
+name = Note Resource
+description = Sample resource implementation
+package = Example modules
+
+dependencies[] = services
+
+core = 7.x
+php = 5.2
