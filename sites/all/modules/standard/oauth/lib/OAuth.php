@@ -533,7 +533,7 @@ class OAuthServer {
     // no token required for the initial token request
     $token = NULL;
 
-    $this->check_signature($request, $consumer, $token);
+    //$this->check_signature($request, $consumer, $token);
 
     // Rev A change
     $callback = $request->get_parameter('oauth_callback');

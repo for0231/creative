@@ -1,0 +1,9 @@
+; $Id$
+name = Notes Javascript
+description = Sample endpoint definition and javascript client implementation
+package = Example modules
+dependencies[] = noteresource
+dependencies[] = rest_server
+
+core = 7.x
+php = 5.2
